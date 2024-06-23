@@ -1,0 +1,4 @@
+.rsyncignore
+.git
+.gitignore
+readme.md
