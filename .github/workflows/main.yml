@@ -19,6 +19,21 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
 
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install PHP dependencies
+        run: composer install --prefer-dist --no-progress --no-dev
+
+      - name: Install and build JS dependencies
+        run: npm install && npx webpack ./index.js
+
       - shell: bash
         env:
           SSH_PORT: ${{ secrets.SSH_PORT }}
